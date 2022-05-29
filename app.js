@@ -1,11 +1,12 @@
 const express = require('express')
-const app = express()
 const bodyparser = require('body-parser')
 const { MongoClient } = require('mongodb')
+const app = express()
 const port = 5000
 const DBUrl = "mongodb+srv://eldottorugo:jnodlLDUevTit4bc@cluster0.z7bax.mongodb.net/?retryWrites=true&w=majority"
 const mongoClient = new MongoClient(DBUrl)
 const DBName = "usersDB"
+
 
 
 app.use(express.static('./public/dist'))
@@ -19,7 +20,7 @@ app.get('/',(req,res)=>{
 })
 
 app.get('/login',(req,res)=>{
-    res.render('login.ejs')
+    res.render('login.ejs',{ error: ''})
 })
 
 app.get('/album',(req,res)=>{
@@ -28,8 +29,11 @@ app.get('/album',(req,res)=>{
 
 app.post('/login',bodyparser.urlencoded(), async function (req,res) {
     const userData = req.body
-    insertDB("users",userData).catch(() => { 
-        console.log('Error on insert')
+    getData('users', userData.email, userData.password).then(data => {
+        if(data.length)
+            res.redirect('/album')
+        else
+            res.render('login.ejs',{ error: '!auth'})
     })
 })
 
@@ -48,5 +52,19 @@ insertDB = async (collectionName, elementToInsert) => {
         return Promise.resolve(result)
     }catch (error) {
         return Promise.reject()
+    }
+}
+
+getData = async (collectionName, email, password) => {
+    try{
+        await mongoClient.connect()
+        const database = mongoClient.db(DBName)
+        const users = database.collection(collectionName)
+        let result = await users.find(
+            { email: email, password: password}
+        ).toArray()
+        return Promise.resolve(result)
+    }catch (error) {
+        return Promise.reject([])
     }
 }

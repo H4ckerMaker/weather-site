@@ -7,25 +7,43 @@
     <title>Document</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="signin.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js"></script>
+    <script src="script.js"></script>
 </head>
-<body class="text-center">
+<svg style="display: none;">
+    <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+    </symbol>
+</svg>
+<body class="">
     <main class="form-signin w-100 m-auto">
         <form action="/login" method="post">
             <img class="mb-4" src="/docs/5.2/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
-            <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+            <h1 class="h3 mb-3 fw-normal">Accedi al tuo account.</h1>
             <div class="form-floating">
                 <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name="email">
-                <label for="floatingInput">Email address</label>
+                <label for="floatingInput">Email</label>
             </div>
             <div class="form-floating">
                 <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password">
                 <label for="floatingPassword">Password</label>
             </div>
             <div class="checkbox mb-3">
-                <label><input type="checkbox" value="remember-me" name="remember-me"> Remember me</label>
+                <label><input type="checkbox" value="remember-me" name="remember-me">Ricordati di me</label>
             </div>
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
-            <p class="mt-5 mb-3 text-muted">&copy; 2017–2022</p>
+            <button class="w-100 btn btn-lg btn-primary " onclick="hashPass(this)" type="submit">
+                Accedi
+            </button>
+            <% if(error) {
+                if(error === '!auth') { %>
+            <div class="alert alert-danger d-flex align-items-center my-3" role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                <div>
+                    Non autorizzato.
+                </div>
+            </div>
+            <% } } %>
+            <p class="mt-5 mb-3 text-muted">&copy; 2022</p>
         </form>
     </main>
 </body>
