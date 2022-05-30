@@ -29,7 +29,6 @@ app.post('/login',bodyparser.urlencoded(), async function (req,res) {
             getCities(userData.email).then(results => {
                 queryInfoAPI(results).then(citiesInfo => {
                     queryPhotosAPI(results).then(photosCity => {
-                        console.log(photosCity)
                         res.render('album.ejs',{email: userData.email, cities: results, info: citiesInfo, photos: photosCity})
                     })
                 })
@@ -65,8 +64,9 @@ queryPhotosAPI = async (results) => {
         for (var i=0;i<results.length;i++){
             let response = await axios.get(process.env.placesAPIUrl + '?input=' + results[i].city + '&inputtype=textquery&language=it&fields=name,photos&key=' + process.env.placesAPIKey)
             let photo_reference = response.data.candidates[0].photos[0].photo_reference
-            response = await axios.get( process.env.placesPhotosURL + '?photo_reference=' + photo_reference + '&maxwidth=1600&maxheight=1600&key=' + process.env.placesAPIKey)
-            photosInfo.push(response.data)
+            response = await axios.get( process.env.placesPhotosURL + '?photo_reference=' + photo_reference + '&maxwidth=300&maxheight=300&key=' + process.env.placesAPIKey,{ responseType: 'arraybuffer'})
+            let image = Buffer.from(response.data, 'binary').toString('base64')
+            photosInfo.push(image)
         }
         return Promise.resolve(photosInfo)
     }catch (error) {
