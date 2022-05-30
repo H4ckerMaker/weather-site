@@ -1,15 +1,11 @@
+const dotenv = require('dotenv').config()
 const express = require('express')
 const bodyparser = require('body-parser')
 const { MongoClient } = require('mongodb')
 const axios = require('axios').default;
 const app = express()
 const port = 5000
-const DBUrl = "mongodb+srv://eldottorugo:jnodlLDUevTit4bc@cluster0.z7bax.mongodb.net/?retryWrites=true&w=majority"
-const mongoClient = new MongoClient(DBUrl)
-const DBName = "usersDB"
-const weatherAPIUrl = "https://api.openweathermap.org/data/2.5/weather"
-const weatherAPIKey = "793615f7609bcfaeb370a166d3a561da"
-
+const mongoClient = new MongoClient(process.env.DBUrl)
 
 
 app.use(express.static('./public/dist'))
@@ -26,22 +22,17 @@ app.get('/login',(req,res)=>{
     res.render('login.ejs',{ error: ''})
 })
 
-
-// Trovare un modo per passare un array di info delle citta in una sola botta e passarlo alla view altrimenti non funziona.
 app.post('/login',bodyparser.urlencoded(), async function (req,res) {
     const userData = req.body
-    const citiesInfo = []
     checkAuth(userData.email, userData.password).then(data => {
         if(data.length){
             getCities(userData.email).then(results => {
-                for (var i=0;i<results.length;i++){
-                    axios.get(weatherAPIUrl + '?q=' + results[i].city + "&appid=" + weatherAPIKey).then(function (response) {
-                        citiesInfo.push(response.data.weather[0])
+                queryInfoAPI(results).then(citiesInfo => {
+                    queryPhotosAPI(results).then(photosCity => {
+                        console.log(photosCity)
+                        res.render('album.ejs',{email: userData.email, cities: results, info: citiesInfo, photos: photosCity})
                     })
-                }
-                return ()=>{
-                    res.render('album.ejs',{email: userData.email, cities: results, info: citiesInfo})
-                }
+                })
             }).catch(error => {
                 console.log(error)
             })
@@ -55,10 +46,38 @@ app.listen(port,()=>{
     console.log(`The server started on port ${port}`)
 })
 
+queryInfoAPI = async (results) => {
+    try{
+        const citiesInfo = []
+        for (var i=0;i<results.length;i++){
+        let response = await axios.get(process.env.weatherAPIUrl + '?q=' + results[i].city + "&appid=" + process.env.weatherAPIKey + "&lang=it")
+            citiesInfo.push(response.data)
+        }
+        return Promise.resolve(citiesInfo)
+    }catch (error) {
+        return Promise.reject()
+    }
+}
+
+queryPhotosAPI = async (results) => {
+    try{
+        const photosInfo = []
+        for (var i=0;i<results.length;i++){
+            let response = await axios.get(process.env.placesAPIUrl + '?input=' + results[i].city + '&inputtype=textquery&language=it&fields=name,photos&key=' + process.env.placesAPIKey)
+            let photo_reference = response.data.candidates[0].photos[0].photo_reference
+            response = await axios.get( process.env.placesPhotosURL + '?photo_reference=' + photo_reference + '&maxwidth=1600&maxheight=1600&key=' + process.env.placesAPIKey)
+            photosInfo.push(response.data)
+        }
+        return Promise.resolve(photosInfo)
+    }catch (error) {
+        return Promise.reject()
+    }
+}
+
 insertDB = async (collectionName, elementToInsert) => {
     try{
         await mongoClient.connect()
-        const database = mongoClient.db(DBName)
+        const database = mongoClient.db(process.env.DBName)
         const users = database.collection(collectionName)
         let result = await users.insertOne(
             { 'email': elementToInsert.email, 'password': elementToInsert.password}
@@ -72,7 +91,7 @@ insertDB = async (collectionName, elementToInsert) => {
 checkAuth = async (email, password) => {
     try{
         await mongoClient.connect()
-        const database = mongoClient.db(DBName)
+        const database = mongoClient.db(process.env.DBName)
         const users = database.collection('users')
         let result = await users.find(
             { email: email, password: password}
@@ -86,7 +105,7 @@ checkAuth = async (email, password) => {
 getCities = async (email) => {
     try{
         await mongoClient.connect()
-        const database = mongoClient.db(DBName)
+        const database = mongoClient.db(process.env.DBName)
         const cities = database.collection('links')
         let results = await cities.find(
             { email: email}
