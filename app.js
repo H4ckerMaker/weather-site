@@ -1,12 +1,18 @@
-const dotenv = require('dotenv').config()
+const session = require('express-session')
+const MongoDBStore = require('connect-mongodb-session')(session)
+require('dotenv').config()
 const express = require('express')
+const authMiddle = require('./authMiddle')
 const bodyparser = require('body-parser')
 const { MongoClient } = require('mongodb')
 const axios = require('axios').default;
 const app = express()
 const port = 5000
-const mongoClient = new MongoClient(process.env.DBUrl)
-
+const mongoClient = new MongoClient(process.env.DBUrlMaj)
+const store = new MongoDBStore({
+    uri: process.env.DBUrl + process.env.DBName,
+    collection: 'sessions'
+})
 
 app.use(express.static('./public/dist'))
 app.use(express.static('./node_modules/bootstrap/dist'))
@@ -18,27 +24,52 @@ app.get('/',(req,res)=>{
     res.render('index.ejs')
 })
 
+app.use(session({
+    secret: process.env.secretToken,
+    resave: false,
+    saveUninitialized: true,
+    unset: 'destroy',
+    store: store,
+    name: 'sessionID',
+    cookie: {secure:false,maxAge:3600000}
+}))
+
 app.get('/login',(req,res)=>{
-    res.render('login.ejs',{ error: ''})
+    if(!req.session.user)
+        res.render('login.ejs',{ error: ''})
+    else
+        res.redirect('/album')
+})
+
+app.get('/album',authMiddle,(req,res)=>{
+    const userEmail = req.session.user.email
+    getCities(userEmail).then(results => {
+        queryInfoAPI(results).then(citiesInfo => {
+            queryPhotosAPI(results).then(photosCity => {
+                res.render('album.ejs',{email: userEmail, cities: results, info: citiesInfo, photos: photosCity})
+            })
+        })
+    }).catch(error => {
+        console.log(error)
+    })
 })
 
 app.post('/login',bodyparser.urlencoded(), async function (req,res) {
     const userData = req.body
     checkAuth(userData.email, userData.password).then(data => {
         if(data.length){
-            getCities(userData.email).then(results => {
-                queryInfoAPI(results).then(citiesInfo => {
-                    queryPhotosAPI(results).then(photosCity => {
-                        res.render('album.ejs',{email: userData.email, cities: results, info: citiesInfo, photos: photosCity})
-                    })
-                })
-            }).catch(error => {
-                console.log(error)
-            })
-        }
-        else
+            req.session.user = {
+                email: userData.email
+            }
+            res.redirect('/album')
+        }else
             res.render('login.ejs',{ error: '!auth'})
     })
+})
+
+app.get('/logout',authMiddle, (req,res)=>{
+    delete req.session.user
+    res.redirect('/login')
 })
 
 app.listen(port,()=>{
