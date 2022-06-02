@@ -5,3 +5,17 @@ function hashPass(obj) {
     var hash = hashObj.getHash("HEX");
     pwdObj.value = hash;
 }
+
+function sendAJAX() {
+    var sendInfo = {
+        data: $('#floatingInputValue').val()
+    }
+    $.ajax({
+        method: "POST",
+        url: "/addCity",
+        success: function(response) {
+            console.log('Città aggiunta '+response)
+        },
+        data: sendInfo
+    })
+}

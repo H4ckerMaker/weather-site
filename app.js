@@ -41,6 +41,12 @@ app.get('/login',(req,res)=>{
         res.redirect('/album')
 })
 
+app.post('/addCity',authMiddle,bodyparser.urlencoded(),async (req,res)=>{
+    console.log(req.body);
+    res.json('Bravo')
+    res.end()
+})
+
 app.get('/album',authMiddle,(req,res)=>{
     const userEmail = req.session.user.email
     getCities(userEmail).then(results => {

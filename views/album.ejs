@@ -22,7 +22,7 @@
               <a class="nav-link" href="/">HomePage</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">YourPage</a>
+              <a class="nav-link active" aria-current="page" href="#">Album</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="dropdown08" data-bs-toggle="dropdown" aria-expanded="false">Account</a>
@@ -45,10 +45,10 @@
                       per controllare il meteo.
                     </p>
                     <p>
-                      <form class="form-floating" action="">
+                      <form class="form-floating" action="/album">
                         <input type="text" class="form-control" id="floatingInputValue">
                         <label for="floatingInputValue">Inserisci qui</label>
-                        <button type="submit" class="btn btn-primary btn-lg my-3" id="cityButton">Aggiungi</button>
+                        <button type="submit" class="btn btn-primary btn-lg my-3" onclick="sendAJAX()" id="cityButton">Aggiungi</button>
                       </form>
                     </p>
                 </div>
