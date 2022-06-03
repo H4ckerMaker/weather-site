@@ -8,13 +8,15 @@ function hashPass(obj) {
 
 function sendAJAX() {
     var sendInfo = {
-        data: $('#floatingInputValue').val()
+        city: $('#floatingInputValue').val(),
+        email: $('#emailText').text()
     }
     $.ajax({
         method: "POST",
         url: "/addCity",
         success: function(response) {
-            console.log('Città aggiunta '+response)
+            $('#infoAlert').text('Città inserita correttamente. Ricaricare la pagina')
+            $('#infoAlert').css('display','block')
         },
         data: sendInfo
     })

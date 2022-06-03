@@ -42,9 +42,15 @@ app.get('/login',(req,res)=>{
 })
 
 app.post('/addCity',authMiddle,bodyparser.urlencoded(),async (req,res)=>{
-    console.log(req.body);
-    res.json('Bravo')
-    res.end()
+    const city = req.body.city
+    const email = req.body.email
+    insertCityDB(email,city).then(result => {
+        res.json({data: 'success'})
+        res.end()
+    }).catch(error => {
+        res.json({data: 'failed'})
+        res.end()
+    })
 })
 
 app.get('/album',authMiddle,(req,res)=>{
@@ -111,16 +117,30 @@ queryPhotosAPI = async (results) => {
     }
 }
 
-insertDB = async (collectionName, elementToInsert) => {
+insertUserDB = async (user) => {
     try{
         await mongoClient.connect()
         const database = mongoClient.db(process.env.DBName)
-        const users = database.collection(collectionName)
+        const users = database.collection('users')
         let result = await users.insertOne(
-            { 'email': elementToInsert.email, 'password': elementToInsert.password}
+            { 'email': user.email, 'password': user.password}
         )
         return Promise.resolve(result)
     }catch (error) {
+        return Promise.reject()
+    }
+}
+
+insertCityDB = async (email,city) => {
+    try{
+        await mongoClient.connect()
+        const database = mongoClient.db(process.env.DBName)
+        const cities = database.collection('links')
+        let result = await cities.insertOne(
+            { 'email': email, 'city': city}
+        )
+        return Promise.resolve(result)
+    }catch (error){
         return Promise.reject()
     }
 }

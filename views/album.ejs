@@ -27,7 +27,7 @@
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="dropdown08" data-bs-toggle="dropdown" aria-expanded="false">Account</a>
               <ul class="dropdown-menu dropdown-menu-dark gap-1 p-2 rounded-3 mx-0 border-0 shadow" aria-labelledby="dropdown08">
-                <li><div class="dropdown-item rounded-2"><%= email %></div></li>
+                <li><div class="dropdown-item rounded-2" id="emailText"><%= email %></div></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item rounded-2" href="/logout">Esci</a></li>
               </ul>
@@ -45,10 +45,11 @@
                       per controllare il meteo.
                     </p>
                     <p>
-                      <form class="form-floating" action="/album">
+                      <form class="form-floating">
                         <input type="text" class="form-control" id="floatingInputValue">
                         <label for="floatingInputValue">Inserisci qui</label>
-                        <button type="submit" class="btn btn-primary btn-lg my-3" onclick="sendAJAX()" id="cityButton">Aggiungi</button>
+                        <button type="button" class="btn btn-primary btn-lg my-3" onclick="sendAJAX()" id="cityButton">Aggiungi</button>
+                        <div style="display: none;"class="alert alert-info my-3" role="alert" id="infoAlert"></div>
                       </form>
                     </p>
                 </div>
