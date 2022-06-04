@@ -79,6 +79,16 @@ app.post('/login',bodyparser.urlencoded(), async function (req,res) {
     })
 })
 
+app.get('/album/:city', authMiddle,(req,res) => {
+    const city = []
+    city.push(req.params)
+    queryInfoAPI(city).then(results => {
+        console.log(results);
+    }).catch((error)=>{
+        console.log(error);
+    })
+})
+
 app.get('/logout',authMiddle, (req,res)=>{
     delete req.session.user
     res.redirect('/login')
