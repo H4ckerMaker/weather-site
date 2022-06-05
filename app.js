@@ -79,11 +79,11 @@ app.post('/login',bodyparser.urlencoded(), async function (req,res) {
     })
 })
 
-app.get('/album/:city', authMiddle,(req,res) => {
-    const city = []
-    city.push(req.params)
-    queryInfoAPI(city).then(results => {
-        console.log(results);
+app.get('/album/:city',authMiddle, (req,res) => {
+    const city = req.params.city
+    queryInfoAPIOnce(city).then(results => {
+        res.render('city.ejs',{info: results.data})
+        console.log(results.data);
     }).catch((error)=>{
         console.log(error);
     })
@@ -98,12 +98,22 @@ app.listen(port,()=>{
     console.log(`The server started on port ${port}`)
 })
 
+queryInfoAPIOnce = async (city) => {
+    try{
+        let response = await axios.get(process.env.weatherAPIUrl + '?q=' + city + '&appid=' + process.env.weatherAPIKey + "&lang=it")
+        return Promise.resolve(response)
+    }catch (error) {
+        console.log(error);
+        return Promise.reject()
+    }
+}
+
 queryInfoAPI = async (results) => {
     try{
         const citiesInfo = []
         for (var i=0;i<results.length;i++){
         let response = await axios.get(process.env.weatherAPIUrl + '?q=' + results[i].city + "&appid=" + process.env.weatherAPIKey + "&lang=it")
-            citiesInfo.push(response.data)
+        citiesInfo.push(response.data)
         }
         return Promise.resolve(citiesInfo)
     }catch (error) {
