@@ -41,6 +41,13 @@ app.get('/login',(req,res)=>{
         res.redirect('/album')
 })
 
+app.get('/signup',(req,res)=>{
+    if(!req.session.user)
+        res.render('signup.ejs')
+    else
+        res.redirect('/album')
+})
+
 app.post('/addCity',authMiddle,bodyparser.urlencoded(),async (req,res)=>{
     const city = req.body.city
     const email = req.body.email
@@ -50,6 +57,24 @@ app.post('/addCity',authMiddle,bodyparser.urlencoded(),async (req,res)=>{
     }).catch(error => {
         res.json({data: 'failed'})
         res.end()
+    })
+})
+
+app.post('/getCityCard', authMiddle, bodyparser.urlencoded(), async (req,res)=>{
+    const city = req.body.city
+    queryInfoAPIOnce(city).then(cityInfo => {
+        queryPhotosAPIOnce(cityInfo).then(photoCity => {
+            res.json({
+                data: 'success',
+                cInfo: cityInfo.data,
+                pCity: photoCity
+            })
+            res.end()
+        }).catch(error => {
+            console.log(error);
+            res.json({data: 'failed'})
+            res.end()
+        })
     })
 })
 
@@ -66,6 +91,7 @@ app.get('/album',authMiddle,(req,res)=>{
     })
 })
 
+
 app.post('/login',bodyparser.urlencoded(), async function (req,res) {
     const userData = req.body
     checkAuth(userData.email, userData.password).then(data => {
@@ -79,11 +105,21 @@ app.post('/login',bodyparser.urlencoded(), async function (req,res) {
     })
 })
 
+app.post('/signup', bodyparser.urlencoded(), async function (req,res) {
+    const user = { email: req.body.email, password: req.body.password }
+    insertUserDB(user).then(data => {
+        if(data){
+            req.session.user = { email: user.email}
+            res.redirect('/album')
+        }else 
+            res.render('signup.ejs')
+    })
+})
+
 app.get('/album/:city',authMiddle, (req,res) => {
     const city = req.params.city
     queryInfoAPIOnce(city).then(results => {
         res.render('city.ejs',{info: results.data})
-        console.log(results.data);
     }).catch((error)=>{
         console.log(error);
     })
@@ -133,6 +169,19 @@ queryPhotosAPI = async (results) => {
         }
         return Promise.resolve(photosInfo)
     }catch (error) {
+        return Promise.reject()
+    }
+}
+
+queryPhotosAPIOnce = async (cityInfo) => {
+    try{
+        let response = await axios.get(process.env.placesAPIUrl + '?input=' + cityInfo.data.name + '&inputtype=textquery&language=it&fields=name,photos&key=' + process.env.placesAPIKey)
+        let photo_reference = response.data.candidates[0].photos[0].photo_reference
+        response = await axios.get( process.env.placesPhotosURL + '?photo_reference=' + photo_reference + '&maxwidth=300&maxheight=300&key=' + process.env.placesAPIKey,{ responseType: 'arraybuffer'})
+        let image = Buffer.from(response.data, 'binary').toString('base64')
+        return Promise.resolve(image)
+    }catch (error){
+        console.log(error);
         return Promise.reject()
     }
 }

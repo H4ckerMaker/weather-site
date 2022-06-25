@@ -17,9 +17,9 @@
 </svg>
 <body class="">
     <main class="form-signin w-100 m-auto">
-        <form action="/login" method="post">
+        <form action="/signup" method="post">
             <img class="mb-4" src="/docs/5.2/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
-            <h1 class="h3 mb-3 fw-normal">Accedi al tuo account.</h1>
+            <h1 class="h3 mb-3 fw-normal">Registrati oggi.</h1>
             <div class="form-floating">
                 <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name="email">
                 <label for="floatingInput">Email</label>
@@ -31,15 +31,6 @@
             <button class="w-100 btn btn-lg btn-primary " onclick="hashPass(this)" type="submit">
                 Accedi
             </button>
-            <% if(error) {
-                if(error === '!auth') { %>
-            <div class="alert alert-danger d-flex align-items-center my-3" role="alert">
-                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-                <div>
-                    Non autorizzato.
-                </div>
-            </div>
-            <% } } %>
             <p class="mt-5 mb-3 text-muted">&copy; 2022</p>
         </form>
     </main>
