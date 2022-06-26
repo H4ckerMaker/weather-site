@@ -60,6 +60,18 @@ app.post('/addCity',authMiddle,bodyparser.urlencoded(),async (req,res)=>{
     })
 })
 
+app.post('/removeCity',authMiddle,bodyparser.urlencoded(),async (req,res)=>{
+    const city = req.body.city
+    const email = req.body.email
+    deleteCity(email,city).then(()=> {
+        res.json({data: 'success'})
+        res.end()
+    }).catch(error => {
+        res.json({data: 'failed'})
+        res.end()
+    })
+})
+
 app.post('/getCityCard', authMiddle, bodyparser.urlencoded(), async (req,res)=>{
     const city = req.body.city
     queryInfoAPIOnce(city).then(cityInfo => {
@@ -206,7 +218,7 @@ insertCityDB = async (email,city) => {
         const database = mongoClient.db(process.env.DBName)
         const cities = database.collection('links')
         let result = await cities.insertOne(
-            { 'email': email, 'city': city}
+            { 'email': email, 'city': city.toLowerCase()}
         )
         return Promise.resolve(result)
     }catch (error){
@@ -239,5 +251,19 @@ getCities = async (email) => {
         return Promise.resolve(results)
     }catch (error) {
         Promise.reject([])
+    }
+}
+
+deleteCity = async (email,city) => {
+    try{
+        await mongoClient.connect()
+        const database = mongoClient.db(process.env.DBName)
+        const cities = database.collection('links')
+        await cities.deleteOne(
+            { email: email, city: city}
+        )
+        return Promise.resolve()
+    }catch (error) {
+        Promise.reject()
     }
 }
