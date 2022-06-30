@@ -51,11 +51,16 @@ app.get('/signup',(req,res)=>{
 app.post('/addCity',authMiddle,bodyparser.urlencoded(),async (req,res)=>{
     const city = req.body.city
     const email = req.body.email
-    insertCityDB(email,city).then(result => {
-        res.json({data: 'success'})
-        res.end()
+    queryInfoAPIOnce(city).then(info => {
+        insertCityDB(email,city).then(result => {
+            res.json({data: 'success'})
+            res.end()
+        }).catch(error => {
+            res.json({data: 'failedDB'})
+            res.end()
+        })
     }).catch(error => {
-        res.json({data: 'failed'})
+        res.json({data: 'failedCity'})
         res.end()
     })
 })
@@ -158,7 +163,6 @@ queryInfoAPIOnce = async (city) => {
         let response = await axios.get(process.env.weatherAPIUrl + '?q=' + city + '&appid=' + process.env.weatherAPIKey + "&lang=it")
         return Promise.resolve(response)
     }catch (error) {
-        console.log(error);
         return Promise.reject()
     }
 }

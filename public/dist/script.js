@@ -16,12 +16,29 @@ function sendAJAX() {
         method: "POST",
         url: "/addCity",
         success: function(response) {
-            $('#infoAlert').text('Città inserita correttamente.')
-            $('#infoAlert').fadeIn("slow","swing")
-            setTimeout(()=>{
-                $('#infoAlert').fadeOut("slow","swing")
-            }, 5000)
-            getCityCard(city)
+            switch(response.data){
+                case 'failedCity':
+                    $('#infoAlert').text('Città non valida')
+                    $('#infoAlert').fadeIn("slow","swing")
+                    setTimeout(()=>{
+                        $('#infoAlert').fadeOut("slow","swing")
+                    }, 5000)
+                    break
+                case 'failedDB':
+                    $('#infoAlert').text('Errore con il server')
+                    $('#infoAlert').fadeIn("slow","swing")
+                    setTimeout(()=>{
+                        $('#infoAlert').fadeOut("slow","swing")
+                    }, 5000)
+                    break
+                default:
+                    $('#infoAlert').text('Città inserita correttamente.')
+                    $('#infoAlert').fadeIn("slow","swing")
+                    setTimeout(()=>{
+                        $('#infoAlert').fadeOut("slow","swing")
+                    }, 5000)
+                    getCityCard(city)
+            }   
         },
         data: sendInfo
     })
