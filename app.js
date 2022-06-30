@@ -43,7 +43,7 @@ app.get('/login',(req,res)=>{
 
 app.get('/signup',(req,res)=>{
     if(!req.session.user)
-        res.render('signup.ejs')
+        res.render('signup.ejs',{ info: ''})
     else
         res.redirect('/album')
 })
@@ -119,13 +119,20 @@ app.post('/login',bodyparser.urlencoded(), async function (req,res) {
 
 app.post('/signup', bodyparser.urlencoded(), async function (req,res) {
     const user = { email: req.body.email, password: req.body.password }
-    insertUserDB(user).then(data => {
-        if(data){
-            req.session.user = { email: user.email}
-            res.redirect('/album')
-        }else 
-            res.render('signup.ejs')
-    })
+    checkSignUp( req.body.email ).then( data => {
+        if(data === 0) {
+            insertUserDB(user).then(data => {
+                if(data){
+                    req.session.user = { email: user.email}
+                    res.redirect('/album')
+                }else 
+                    res.render('signup.ejs',{ info: ''})
+            })
+        }else
+            res.render('signup.ejs',{ info: 'error'})
+    }).catch( (error) => {
+        console.log(error);
+    })  
 })
 
 app.get('/album/:city',authMiddle, (req,res) => {
@@ -237,6 +244,23 @@ checkAuth = async (email, password) => {
         return Promise.resolve(result)
     }catch (error) {
         return Promise.reject([])
+    }
+}
+
+checkSignUp = async (email) => {
+    try{
+        await mongoClient.connect()
+        const database = mongoClient.db(process.env.DBName)
+        const users = database.collection('users')
+        let result = await users.find(
+            { email: email}
+        ).toArray()
+        if(result.length > 0)
+            return Promise.resolve(1)
+        else
+            return Promise.resolve(0)
+    }catch(error) {
+        return Promise.reject()
     }
 }
 

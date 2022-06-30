@@ -33,6 +33,14 @@
             </button>
             <p class="mt-5 mb-3 text-muted">&copy; 2022</p>
         </form>
+        <% if(info === 'error') { %>
+            <div class="alert alert-danger d-flex align-items-center my-3" role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                <div>
+                Email già in uso.
+                </div>
+            </div>
+        <% } %>
     </main>
 </body>
 </html>

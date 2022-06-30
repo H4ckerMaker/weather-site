@@ -17,7 +17,10 @@ function sendAJAX() {
         url: "/addCity",
         success: function(response) {
             $('#infoAlert').text('Città inserita correttamente.')
-            $('#infoAlert').css('display','block')
+            $('#infoAlert').fadeIn("slow","swing")
+            setTimeout(()=>{
+                $('#infoAlert').fadeOut("slow","swing")
+            }, 5000)
             getCityCard(city)
         },
         data: sendInfo
@@ -35,8 +38,10 @@ function deleteCard(anchor) {
         url: "/removeCity",
         success: function(response) {
             $('#infoAlert').text('Città cancellata correttamente.')
-            $('#infoAlert').css('display','block')
-            console.log(response);
+            $('#infoAlert').fadeIn("slow","swing")
+            setTimeout(()=>{
+                $('#infoAlert').fadeOut("slow","swing")
+            }, 5000)
             $('#'+city).parents()[4].remove()
         },
         data: sendInfo
