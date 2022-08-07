@@ -11,22 +11,23 @@
     <script src="/script.js"></script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow" aria-label="Tenth navbar example">
-        <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow" aria-label="">
+        <div class="container-fluid col-xxl-8 px-4">
+          <a class="navbar-brand d-flex align-items-center" href="/">
+            <img src="/images/icon.png" alt="WeatherzIcon" width="50" height="50" class="d-inline-block align-text-top m-2">
+            Weatherz
+          </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-        <div class="collapse navbar-collapse justify-content-md-center" id="navbarsExample08">
+        <div class="collapse navbar-collapse justify-content-md-end" id="navbarsExample08">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" href="/">HomePage</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Album</a>
+              <a class="btn btn-primary px-3 mx-lg-3" aria-current="page" href="/album">Il tuo Album</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="dropdown08" data-bs-toggle="dropdown" aria-expanded="false">Account</a>
-              <ul class="dropdown-menu dropdown-menu-dark gap-1 p-2 rounded-3 mx-0 border-0 shadow" aria-labelledby="dropdown08">
+              <ul class="dropdown-menu dropdown-menu-light gap-1 p-2 rounded-3 mx-0 border-0 shadow" aria-labelledby="dropdown08">
                 <li><div class="dropdown-item rounded-2" id="emailText"><%= email %></div></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item rounded-2" href="/logout">Esci</a></li>
@@ -37,12 +38,12 @@
       </div>
     </nav>
     <main>
-        <section class="py-5 text-center container">
+        <section class="text-center container">
             <div class="row py-lg-5">
                 <div class="col-lg-6 col-md-8 mx-auto">
-                    <h1 class="fw-light">Inserisci la città</h1>
-                    <p class="lead text-muted">La città che cercherai verrà aggiunta alla lista delle tue città che potrai consultare
-                      per controllare il meteo.
+                    <h1 class="fw-light">Aggiungi la tua città.</h1>
+                    <p class="lead text-muted">Inserisci la città che vuoi aggiungere al tuo album.<br>
+                      Una volta aggiunta potrai consultare il tuo album per controllarne il meteo e altre informazioni.
                     </p>
                     <p>
                       <form class="form-floating">
@@ -55,19 +56,19 @@
                 </div>
             </div>
         </section>
-        <div class="album py-5 bg-light">
-            <div class="container">
+        <div class="album bg-light">
+            <div class="container ">
                 <div id="albumCont" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                     <% for(var i=0; i < cities.length; i++) { %>
                     <div class="col">
-                        <div class="card shadow">
-                            <img src="data:image/jpeg;base64,<%= photos[i] %>" class="card-img-top" alt="<%= cities[i].city.toLowerCase() %>">
+                        <div class="card shadow" >
+                            <img src="data:image/jpeg;base64,<%= photos[i] %>" class="card-img-top" style="max-height: 300px;" alt="<%= cities[i].city.toLowerCase() %>">
                             <div class="card-body">
                                 <h5 class="card-title"><%= cities[i].city.toLowerCase() %></h5>
                                 <p class="card-text"><%= info[i].weather[0].description%></p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
-                                      <a type="button" class="btn btn-sm btn-outline-secondary" href="/album/<%= cities[i].city.toLowerCase() %>">Più informazioni</a>
+                                      <a type="button" class="btn btn-sm btn-outline-secondary shadow-none" href="/album/<%= cities[i].city.toLowerCase() %>">Informazioni</a>
                                       <a type="button" class="btn btn-sm btn-outline-danger" onclick="deleteCard(this)" id="<%= cities[i].city.toLowerCase() %>">Elimina</a>
                                     </div>
                                 </div>

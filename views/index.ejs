@@ -9,29 +9,30 @@
     <link rel="stylesheet" href="homestyle.css">
 </head>
     <body>
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow" aria-label="Tenth navbar example">
-        <div class="container-fluid">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light shadow" aria-label="">
+        <div class="container-fluid col-xxl-8 px-4">
+          <a class="navbar-brand d-flex align-items-center" href="/">
+            <img src="/images/icon.png" alt="WeatherzIcon" width="50" height="50" class="d-inline-block align-text-top m-2">
+            Weatherz
+          </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-        <div class="collapse navbar-collapse justify-content-md-center" id="navbarsExample08">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">HomePage</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/login">Album</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/signup">Registrati</a>
-            </li>
-          </ul>
-        </div>
+          <div class="collapse navbar-collapse justify-content-md-end" id="navbarsExample08">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="btn btn-primary px-3 mx-lg-3" type="button" href="/login">Scopri il tuo Album</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/signup">Registrati</a>
+              </li>
+            </ul>
+          </div>
       </nav>
     <div class="container col-xxl-8 px-4 py-5">
       <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
         <div class="col-10 col-sm-8 col-lg-6">
-          <img src="bootstrap-themes.png" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+          <img src="/images/albumScreen.png" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
         </div>
         <div class="col-lg-6">
           <h1 class="display-5 fw-bold lh-1 mb-3">Responsive left-aligned hero with image</h1>

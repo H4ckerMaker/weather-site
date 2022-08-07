@@ -73,7 +73,7 @@ function getCityCard(city) {
         success: function(response) {
             var photo = response.pCity
             var info = response.cInfo
-            $('#albumCont').append('<div class="col"><div class="card shadow"><img src="data:image/jpeg;base64,' +photo+ '" class="card-img-top" alt="' +info.name.toLowerCase()+ '"><div class="card-body"><h5 class="card-title">' +info.name.toLowerCase()+ '</h5><p class="card-text">' +info.weather[0].description+ '</p><div class="d-flex justify-content-between align-items-center"><div class="btn-group"><a type="button" class="btn btn-sm btn-outline-secondary" href="/album/' +info.name.toLowerCase()+ '">Più informazioni</a><a type="button" class="btn btn-sm btn-outline-danger" onclick="deleteCard(this)" id="' +info.name.toLowerCase()+'">Elimina</a></div></div></div></div></div>')
+            $('#albumCont').append('<div class="col"><div class="card shadow"><img src="data:image/jpeg;base64,' +photo+ '" class="card-img-top" style="max-height: 300px;" alt="' +info.name.toLowerCase()+ '"><div class="card-body"><h5 class="card-title">' +info.name.toLowerCase()+ '</h5><p class="card-text">' +info.weather[0].description+ '</p><div class="d-flex justify-content-between align-items-center"><div class="btn-group"><a type="button" class="btn btn-sm btn-outline-secondary" href="/album/' +info.name.toLowerCase()+ '">Informazioni</a><a type="button" class="btn btn-sm btn-outline-danger" onclick="deleteCard(this)" id="' +info.name.toLowerCase()+'">Elimina</a></div></div></div></div></div>')
         },
         data: sendInfo
     })
