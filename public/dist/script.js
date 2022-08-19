@@ -46,6 +46,7 @@ function sendAJAX() {
 
 function deleteCard(anchor) {
     var city = anchor.id
+    console.log(city);
     var sendInfo = {
         city: city,
         email: $('#emailText').text()
@@ -59,7 +60,7 @@ function deleteCard(anchor) {
             setTimeout(()=>{
                 $('#infoAlert').fadeOut("slow","swing")
             }, 5000)
-            $('#'+city).parents()[4].remove()
+            $("[id='"+city+"']").parents()[4].remove()
         },
         data: sendInfo
     })
