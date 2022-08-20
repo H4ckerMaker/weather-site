@@ -9,24 +9,109 @@
     <link rel="stylesheet" href="/citypage.css">
 </head>
 <body>
-    <div class="card">
-        <span class="icon"><img class="img-fluid" src="https://img.icons8.com/emoji/96/000000/sun-emoji.png"/></span>
-        <div class="title"><p><%=info.name%></p></div>
-        <div class="temp"><%= parseInt(info.main.temp - 273)%><sup>&deg;</sup></div>
-            <div class="row">
-                <div class="col-4">
-                    <div class="header">Pressione</div>
-                    <div class="value"><%= info.main.pressure%> mbar</div>
-                </div>
-                <div class="col-4">
-                    <div class="header">Umidità</div>
-                    <div class="value"><%= info.main.humidity%>%</div>
-                </div>
-                <div class="col-4">
-                    <div class="header">Fire</div>
-                    <div class="value">No</div>
-                </div>
-            </div>  
-    </div>
+    <%
+        var date = new Date();
+        const months = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
+        var month = months[date.getMonth()];
+        var hours = (date.getHours() + (info.timezone)/3600 - 2)%24;
+        var perc = 4.16 * hours;
+        var identifier = info.weather[0].id;
+        var iconz = info.weather[0].icon;
+        switch(identifier){
+            case 800:
+                var icon = '/images/800/800.png';
+                break;
+            case 801:
+                var icon = '/images/800/801.png';
+                break;
+            case 802:
+                var icon = '/images/800/802.png';
+                break;
+            case 200:
+                var icon = '/images/200/200.png';
+                break;
+            case 201:
+                var icon = '/images/200/201.png';
+                break;
+            case 210:
+                var icon = '/images/200/210.png';
+                break;
+            case 300:
+                if(iconz.includes("n")){
+                    var icon = '/images/300/300n.png';
+                }else{
+                    var icon = '/images/300/300d.png';
+                }
+                break;
+            case 500:
+                var icon = "/images/500/500.png";
+                break;
+            case 600:
+                if(iconz.includes("n")){
+                    var icon = '/images/600/600n.png';
+                }else{
+                    var icon = '/images/600/600d.png';
+                }
+                break;
+            case 601:
+                var icon = '/images/600/601.png';
+                break;
+            case 700:
+                if(iconz.includes("n")){
+                    var icon = '/images/700/700n.png';
+                }else{
+                    var icon = '/images/700/700d.png';
+                }
+                break;
+            default:
+                if(identifier < 300)
+                    var icon = '/images/200/201.png';
+                else if(identifier < 500 && identifier >= 300)
+                    var icon = '/images/300/300d.png';
+                else if(identifier < 600 && identifier >= 500)
+                    var icon = '/images/500/500.png';
+                else if(identifier < 700 && identifier >= 600)
+                    var icon = '/images/600/601.png';
+                else if(identifier < 800 && identifier >= 700)
+                    var icon = '/images/700/700d.png';
+                else if(identifier >= 800)
+                    var icon = '/images/800/802.png'
+        }
+    %>
+    <div class="container">
+        <section class="mx-auto my-5" style="max-width: 23rem;">
+          <div class="card shadow ">
+            <span class="icon position-relative">
+                <img class="img-fluid position-absolute my-3" src="<%=icon %>" height="200" width="200" style="left: 240px;top: -60px;"/>
+            </span>
+            <div class="card-body">
+              <h5 class="card-title font-weight-bold"><%=info.name%></h5>
+              <p class="card-text"><%=date.getDate()%> <%=month%>, <%=hours%>:<%=date.getMinutes()%>, <%=info.weather[0].description%></p>
+              <div class="d-flex justify-content-between">
+                <p class="display-1 degree"><%=parseInt(info.main.temp) - 273 %></p>
+                <i class="fas fa-sun-o fa-5x pt-3 text-warning"></i>
+              </div>
+              <div class="d-flex justify-content-between mb-4">
+                <p><i class="fas fa-tint fa-lg text-info pe-2"></i><%=info.main.pressure%> bar - Pressione</p>
+                <p><i class="fas fa-leaf fa-lg text-muted pe-2"></i><%=info.main.humidity%> kg/m - Umidità</p>
+              </div>
+              <div class="progress mx-4">
+                <div class="progress-bar bg-black " role="progressbar" style="width: <%=perc%>%;" aria-valuenow="<%=perc%>"
+                  aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <ul class="list-unstyled d-flex justify-content-between font-small text-muted my-4">
+                <li class="ps-4">00:00</li>
+                <li>06:00</li>
+                <li>12:00</li>
+                <li>18:00</li>
+                <li class="pe-4">24:00</li>
+              </ul>
+              <hr />
+            </div>
+          </div>
+          <a class="btn btn-primary my-4" href="/album">Torna indietro</a>
+        </section>
+      </div>
+
 </body>
 </html>
